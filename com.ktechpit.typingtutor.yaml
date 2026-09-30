@@ -1,0 +1,44 @@
+app-id: com.ktechpit.typingtutor
+runtime: org.kde.Platform
+runtime-version: '6.11'
+sdk: org.kde.Sdk
+command: typingtutor
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --env=INSTALL_TYPE=flatpak
+
+modules:
+  - shared-modules/squashfs-tools/squashfs-tools.json
+
+  - name: typingtutor
+    buildsystem: simple
+    build-commands:
+      - unsquashfs -no-progress *.snap
+      - install -Dm755 squashfs-root/usr/bin/typingtutor ${FLATPAK_DEST}/bin/typingtutor
+      - cp -r squashfs-root/usr/share/icons ${FLATPAK_DEST}/share/
+      - install -Dm644 squashfs-root/usr/share/applications/com.ktechpit.typingtutor.desktop ${FLATPAK_DEST}/share/applications/com.ktechpit.typingtutor.desktop
+      - desktop-file-edit --set-icon=${FLATPAK_ID} ${FLATPAK_DEST}/share/applications/com.ktechpit.typingtutor.desktop
+      - install -Dm644 squashfs-root/usr/share/metainfo/com.ktechpit.typingtutor.metainfo.xml ${FLATPAK_DEST}/share/metainfo/com.ktechpit.typingtutor.metainfo.xml
+    sources:
+      # =========================
+      # x86_64 (amd64) — stable
+      # =========================
+      - type: file
+        url: https://api.snapcraft.io/api/v1/snaps/download/FL8sw2ZW4ABBp75yH5pFTdUaLlfWEo3r_4.snap
+        sha256: a910e9d6f6d0ea3a8f932322ff7a80b18b9ef0a63690317a18f4e951c7432964
+        only-arches:
+          - x86_64
+
+      # =========================
+      # aarch64 – stable
+      # =========================
+      - type: file
+        url: https://api.snapcraft.io/api/v1/snaps/download/FL8sw2ZW4ABBp75yH5pFTdUaLlfWEo3r_3.snap
+        sha256: 28750806e892ce58665a5e28b05d4cd7e0ef32e33bcd0d585b167ca49df9e5f2
+        only-arches:
+          - aarch64
